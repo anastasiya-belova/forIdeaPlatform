@@ -39,5 +39,4 @@ public class Ticket {
     public OffsetDateTime getTimeOfArrival(){
         return OffsetDateTime.parse(this.timeOfArrival);
     }
-    public Ticket(){}
 }

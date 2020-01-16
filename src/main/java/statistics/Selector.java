@@ -18,24 +18,29 @@ public class Selector {
     
     public Selector(){}
     
+    /**
+     * Selects the flight time between two points from the ticket list.
+     * @param tickets - list of tickets
+     * @param selectParameter1 - first point
+     * @param selectParameter2 - second point
+     * @return an array of flight times
+     * @throws ArithmeticException 
+     */
     public static double[] getArrForStatistic(List<Ticket> tickets, String selectParameter1, String selectParameter2) throws ArithmeticException{
-        List<Long> listOfFlightTime = new ArrayList<>();//time in minutes
-        for(Ticket next : tickets){
-            if(selectParameter1.equals(next.getFrom()) && selectParameter2.equals(next.getTo())
-                    || selectParameter2.equals(next.getFrom()) && selectParameter1.equals(next.getTo())){
-                long flightTime = next.getTimeOfDeparture().until(next.getTimeOfArrival(), MINUTES);
-                if (flightTime <= 0){
-                    throw new ArithmeticException();
-                }
-                listOfFlightTime.add(flightTime);
-            }
-        }
-        double[] arrOfFlightTime = new double[listOfFlightTime.size()];
-        int count = 0;
-        for (Long next : listOfFlightTime){
-            arrOfFlightTime[count] = next.doubleValue();
-            count++;
-        }
+        
+        double[] arrOfFlightTime = tickets.stream()
+                .filter((next) -> (selectParameter1.equals(next.getFrom()) && selectParameter2.equals(next.getTo())
+                || selectParameter2.equals(next.getFrom()) && selectParameter1.equals(next.getTo())))
+                .map((next) -> next.getTimeOfDeparture().until(next.getTimeOfArrival(), MINUTES))
+                .map((flightTime) -> {
+                    if (flightTime <= 0){
+                        throw new ArithmeticException();
+                    }
+                    return flightTime;
+                })
+                .mapToDouble(flightTime -> flightTime)
+                .toArray();
+                
         return arrOfFlightTime;
     }
 }

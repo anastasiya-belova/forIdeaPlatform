@@ -23,10 +23,18 @@ import statistics.Selector;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    static{
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "logback.xml");
-        Logger logger = LoggerFactory.getLogger(Main.class);
-
+    }
+    static Logger logger = LoggerFactory.getLogger(Main.class);
+    
+    static DecimalFormat twoDecimalPlaces = new DecimalFormat("#0.00");
+    
+    public static void main(String[] args) {
+        run(args);
+    }
+    
+    public static void run(String[] args){
         JsonParser jsonParser = JsonParser.getInstance();
         if (args.length > 0) {
             jsonParser.setFile(args[0]);
@@ -39,17 +47,14 @@ public class Main {
         } catch (IOException e) {
             logger.error("Program execution stopped because an error occured: " + e.getMessage());
             return;
-        } catch (JsonSyntaxException e) {
-            logger.error("Program execution stopped because an error occured: " + e.toString());
-            return;
-        } catch (NullPointerException e) {
+        } catch (JsonSyntaxException | NullPointerException e) {
             logger.error("Program execution stopped because an error occured: " + e.toString());
             return;
         }
         try {
             DescriptiveStatistics stat = new DescriptiveStatistics(Selector.getArrForStatistic(tickets, "Tel-Aviv", "Vladivostok"));
-            logger.info("Average flight time: " + new DecimalFormat("#0.00").format(stat.getMean()) + " minutes");
-            logger.info("90-percentile of flight time: " + new DecimalFormat("#0.00").format(stat.getPercentile(90)) + " minutes");
+            logger.info("Average flight time: " + twoDecimalPlaces.format(stat.getMean()) + " minutes");
+            logger.info("90-percentile of flight time: " + twoDecimalPlaces.format(stat.getPercentile(90)) + " minutes");
         } catch (ArithmeticException e) {
             logger.error("The departure time later than the time of landing.");
         } catch (DateTimeParseException e) {

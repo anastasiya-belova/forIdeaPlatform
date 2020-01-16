@@ -16,10 +16,12 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- *
+ * Parses objects of the "Tickets" type from a file.
  * @author Anastasiya Belova
  */
 public class JsonParser {
+    Logger logger = LoggerFactory.getLogger(JsonParser.class);
+    
     private File file;
     
     private JsonParser() {}
@@ -39,7 +41,6 @@ public class JsonParser {
     }
     
     public List<Ticket> readJson() throws IOException, JsonSyntaxException, NullPointerException {
-        Logger logger = LoggerFactory.getLogger(JsonParser.class);
         String jsonString;
         jsonString = FileUtils.readFileToString(file, "UTF-8");
         Gson gson = new Gson();
