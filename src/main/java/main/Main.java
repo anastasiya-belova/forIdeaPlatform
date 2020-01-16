@@ -31,10 +31,10 @@ public class Main {
     static DecimalFormat twoDecimalPlaces = new DecimalFormat("#0.00");
     
     public static void main(String[] args) {
-        run(args);
+        start(args);
     }
     
-    public static void run(String[] args){
+    public static void start(String[] args){
         JsonParser jsonParser = JsonParser.getInstance();
         if (args.length > 0) {
             jsonParser.setFile(args[0]);
@@ -45,16 +45,16 @@ public class Main {
         try {
             tickets = jsonParser.readJson();
         } catch (IOException e) {
-            logger.error("Program execution stopped because an error occured: " + e.getMessage());
+            logger.error("Program execution stopped because an error occured: ", e);
             return;
         } catch (JsonSyntaxException | NullPointerException e) {
-            logger.error("Program execution stopped because an error occured: " + e.toString());
+            logger.error("Program execution stopped because an error occured: ", e);
             return;
         }
         try {
             DescriptiveStatistics stat = new DescriptiveStatistics(Selector.getArrForStatistic(tickets, "Tel-Aviv", "Vladivostok"));
-            logger.info("Average flight time: " + twoDecimalPlaces.format(stat.getMean()) + " minutes");
-            logger.info("90-percentile of flight time: " + twoDecimalPlaces.format(stat.getPercentile(90)) + " minutes");
+            logger.info("Average flight time: {} minutes", twoDecimalPlaces.format(stat.getMean()));
+            logger.info("90-percentile of flight time: {} minutes", twoDecimalPlaces.format(stat.getPercentile(90)));
         } catch (ArithmeticException e) {
             logger.error("The departure time later than the time of landing.");
         } catch (DateTimeParseException e) {
